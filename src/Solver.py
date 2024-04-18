@@ -118,10 +118,10 @@ class Maze():
         row, col = state
         
         candidates = [
-            ("up", (row -1, col)),
-            ("down", (row + 1, col)),
-            ("left", (row, col -1)),
-            ("right", (row, col +1))
+            ("↑", (row -1, col)),
+            ("↓", (row + 1, col)),
+            ("←", (row, col -1)),
+            ("→", (row, col +1))
         ]
 
         neighbors = []
@@ -134,7 +134,7 @@ class Maze():
     def getMinDistance(self, frontier):
         node = frontier[0]
         for child in frontier:
-            if (child.distance + child.steps) < (node.distance + node.steps):
+            if (child.distance + (child.steps)) < (node.distance + (node.steps)):
                 node = child
         frontier.pop(frontier.index(node))
         return node
@@ -159,8 +159,10 @@ class Maze():
             
             # DFS
             #node = frontier.pop()
-            self.numExplored = node.steps
+            self.presentSteps = node.steps
+            self.presentSteps += 1
             self.numExplored += 1
+            
 
             if node.state == self.goal:
                 actions = []
@@ -179,7 +181,7 @@ class Maze():
 
             for action, state in self.neighbors(node.state):
                 if not frontier.contains_state(state) and state not in self.explored:
-                    child = Node(state=state, parent=node, action=action, distance=self.distanceToGoal[state[0]][state[1]], steps=self.numExplored)
+                    child = Node(state=state, parent=node, action=action, distance=self.distanceToGoal[state[0]][state[1]], steps=self.presentSteps)
                     frontier.add(child)
 
 
@@ -255,4 +257,3 @@ maze.DrawImage("maze.png", True, True)
 print(f"Number of steps: {len(maze.solution[0])}")
 print(f"Number of explored cells: {maze.numExplored}")
 print(f"Steps: {maze.solution[0]}")
-print(f"Image saved to maze.png")
